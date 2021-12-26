@@ -52,18 +52,30 @@ namespace HTTPServer
             string[] res = requestString.Split(delimeters, StringSplitOptions.None);
 
             // check that there is atleast 3 lines: Request line, Host Header, Blank line (usually 4 lines with the last empty line for empty content)
-            for (int i = 0; i < res.Length; i++)
+            if (res.Count() < 3)
             {
-                if(res.Count() >= 2)
-                {
-
-                }
+                return false;
             }
             // Parse Request line
-            ParseRequestLine();
+            if (!ParseRequestLine())
+            {
+                return false;
+            }
             // Validate blank line exists
-
+            if (!ValidateBlankLine())
+            {
+                return false;
+            }
             // Load header lines into HeaderLines dictionary
+
+            for (int i = 0; i < res.Count(); i++)
+            {
+                if (res[i].Contains(':'))
+                {
+                    string[] attributes = res[i].Split(':');
+                    headerLines.Add(attributes[0], attributes[1]);
+                }
+            }
         }
 
         private bool ParseRequestLine()
