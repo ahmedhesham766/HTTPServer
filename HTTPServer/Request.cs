@@ -49,22 +49,30 @@ namespace HTTPServer
 
             //TODO: parse the receivedRequest using the \r\n delimeter   
             string[] delimeters = { "\r\n" };
-            string[] res = requestString.Split(delimeters, StringSplitOptions.None);
+            requestLines = requestString.Split(delimeters, StringSplitOptions.None);
 
             // check that there is atleast 3 lines: Request line, Host Header, Blank line (usually 4 lines with the last empty line for empty content)
-            if (res.Count() < 3)
+            if (requestLines.Count() < 3)
             {
                 return false;
             }
             // Parse Request line
-
            
-            res[0] = method+" "+relativeURI+" "+ httpVersion;
-            string[] tokens = res[0].Split(' ');
-            for(int i =0; i < tokens.Count(); i++)
-            {
-                requestLines[i] = tokens[i];
-            }
+            string[] tokens = requestLines[0].Split(' ');
+          
+                if(tokens[0].Equals("GET"))
+                {
+                    method = RequestMethod.GET;
+                }
+                else if(tokens[0].Equals("POST"))
+                {
+                    method = RequestMethod.POST;
+                }
+                else
+                {
+                    method = RequestMethod.HEAD;
+                }
+ 
             if(!ValidateIsURI(relativeURI))
             {
                 return false;
