@@ -50,71 +50,114 @@ namespace HTTPServer
             //TODO: parse the receivedRequest using the \r\n delimeter   
             string[] delimeters = { "\r\n" };
             requestLines = requestString.Split(delimeters, StringSplitOptions.None);
-
+            
             // check that there is atleast 3 lines: Request line, Host Header, Blank line (usually 4 lines with the last empty line for empty content)
-            if (requestLines.Count() < 3)
+            if (requestLines.Length < 3)
             {
                 return false;
             }
             // Parse Request line
-           
-            string[] tokens = requestLines[0].Split(' ');
-          
-                if(tokens[0].Equals("GET"))
-                {
-                    method = RequestMethod.GET;
-                }
-                else if(tokens[0].Equals("POST"))
-                {
-                    method = RequestMethod.POST;
-                }
-                else
-                {
-                    method = RequestMethod.HEAD;
-                }
- 
-            if(!ValidateIsURI(relativeURI))
+            if(!ParseRequestLine())
+            {
+                return false;
+            }  
+            //relativeURI = tokens[1];
+            if (!ValidateIsURI(relativeURI))
             {
                 return false;
             }
-                
-
             // Validate blank line exists
+
             if (!ValidateBlankLine())
             {
                 return false;
             }
             // Load header lines into HeaderLines dictionary
-            
-            for (int i = 0; i < res.Count(); i++)
+
+            if(!LoadHeaderLines())
             {
-                if (res[i].Contains(':'))
-                {
-                    string[] attributes = res[i].Split(':');
-                    headerLines.Add(attributes[0], attributes[1]);
-                }
+                return false;
             }
+
+            return true;
         }
 
         private bool ParseRequestLine()
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+            string[] tokens = requestLines[0].Split(' ');
+            relativeURI = tokens[1];
+            if (tokens[0].Equals("GET"))
+            {
+                method = RequestMethod.GET;
+            }
+            else if (tokens[0].Equals("POST"))
+            {
+                method = RequestMethod.POST;
+            }
+            else if (tokens[0].Equals("HEAD"))
+            {
+                method = RequestMethod.HEAD;
+            }
+            if (tokens[2].Equals("HTTP/1.0"))
+            {
+                httpVersion = HTTPVersion.HTTP10;
+            }
+            else if (tokens[2].Equals("HTTP/1.1"))
+            {
+                httpVersion = HTTPVersion.HTTP11;
+            }
+            else if (tokens[2].Equals("HTTP/0.9"))
+            {
+                httpVersion = HTTPVersion.HTTP09;
+            }
+            if (tokens[0]== null || tokens[2] == null)
+            {
+                return false;
+            }
+            return true;
+
         }
-        
+
         private bool ValidateIsURI(string uri)
         {
+
             return Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute);
         }
 
         private bool LoadHeaderLines()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            string[] delimeters1 = { ": " };
+            for (int i = 0; i < requestLines.Length; i++)
+            {
+                if (requestLines[i].Contains(':'))
+                {
+                    string[] attributes = requestLines[i].Split(delimeters1, StringSplitOptions.None);
+                    headerLines.Add(attributes[0], attributes[1]);
+                   
+                }
+            }
+            if (headerLines.Count() == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool ValidateBlankLine()
         {
-            throw new NotImplementedException();
-        }
+            //throw new NotImplementedException();
+            string blankline = requestLines[(requestLines.Length)-2];
+            if (blankline.Equals(String.Empty))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
+        }
     }
 }
