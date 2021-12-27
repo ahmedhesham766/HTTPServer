@@ -57,17 +57,27 @@ namespace HTTPServer
                 return false;
             }
             // Parse Request line
-            if (!ParseRequestLine())
+
+           
+            res[0] = method+" "+relativeURI+" "+ httpVersion;
+            string[] tokens = res[0].Split(' ');
+            for(int i =0; i < tokens.Count(); i++)
+            {
+                requestLines[i] = tokens[i];
+            }
+            if(!ValidateIsURI(relativeURI))
             {
                 return false;
             }
+                
+
             // Validate blank line exists
             if (!ValidateBlankLine())
             {
                 return false;
             }
             // Load header lines into HeaderLines dictionary
-
+            
             for (int i = 0; i < res.Count(); i++)
             {
                 if (res[i].Contains(':'))
@@ -82,7 +92,7 @@ namespace HTTPServer
         {
             throw new NotImplementedException();
         }
-
+        
         private bool ValidateIsURI(string uri)
         {
             return Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute);
