@@ -81,7 +81,6 @@ namespace HTTPServer
         private bool ParseRequestLine()
         {
             string[] tokens = requestLines[0].Split(' ');
-            relativeURI = tokens[1];
             if (tokens[0].Equals("GET"))
             {
                 method = RequestMethod.GET;
@@ -94,6 +93,9 @@ namespace HTTPServer
             {
                 method = RequestMethod.HEAD;
             }
+            ////////////////////////
+            relativeURI = tokens[1];
+            ////////////////////////
             if (tokens[2].Equals("HTTP/1.0"))
             {
                 httpVersion = HTTPVersion.HTTP10;
@@ -126,6 +128,7 @@ namespace HTTPServer
         private bool LoadHeaderLines()
         {
             string[] delimeters1 = { ": " };
+            headerLines = new Dictionary<string, string>();
             for (int i = 0; i < requestLines.Length; i++)
             {
                 if (requestLines[i].Contains(':'))

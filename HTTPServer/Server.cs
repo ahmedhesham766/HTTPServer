@@ -43,9 +43,9 @@ namespace HTTPServer
             // TODO: Create client socket
             Socket clientSocket = (Socket)obj;
             // set client socket ReceiveTimeout = 0 to indicate an infinite time-out period
-            clientSocket.ReceiveTimeout = 0;
             string welcome = "welcome to the project server";
-            byte [] data = Encoding.ASCII.GetBytes("");
+            byte [] data = Encoding.ASCII.GetBytes(welcome);
+            clientSocket.ReceiveTimeout = 0;
             clientSocket.Send(data);
             int receivedLength;
             // TODO: receive requests in while true until remote client closes the socket.
@@ -63,7 +63,8 @@ namespace HTTPServer
                         break;
                     }
                     // TODO: Create a Request object using received request string
-                     Request req = new Request(Encoding.ASCII.GetString(data));
+                    Request req = new Request(Encoding.ASCII.GetString(data));
+                    req.ParseRequest();
                     // TODO: Call HandleRequest Method that returns the response
                     Response respo = HandleRequest(req);
                     // TODO: Send Response back to client

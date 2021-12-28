@@ -15,7 +15,7 @@ namespace HTTPServer
         BadRequest = 400,
         Redirect = 301
     }
-
+    // response format is string you should put it in format response
     class Response
     {
         string responseString;
@@ -26,23 +26,57 @@ namespace HTTPServer
                 return responseString;
             }
         }
-        StatusCode code;
+        //StatusCode code;
         List<string> headerLines = new List<string>();
         public Response(StatusCode code, string contentType, string content, string redirectoinPath)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             // TODO: Add headlines (Content-Type, Content-Length,Date, [location if there is redirection])
+            
+            string status = GetStatusLine(code);
 
+            headerLines.Add(contentType);
+            headerLines.Add(content.Length.ToString());
+            headerLines.Add(DateTime.Now.ToString("ddd,dd MMM yyy HH':'mm':'ss 'EST'"));
 
-            // TODO: Create the request string
+            if (code == StatusCode.Redirect)
+            {
+                headerLines.Add(redirectoinPath);
 
+                responseString = status + "\r\n" + "Content-Type: " + headerLines[0] + "\r\n" + "Content-Length: " + headerLines[1] + "\r\n" + "Date: " + headerLines[2] + "\r\n" + "location: " + headerLines[3] + "\r\n" + "\r\n" + content;
+
+            }
+            else
+            {
+                responseString = status + "\r\n" + "Content-Type: " + headerLines[0] + "\r\n" + "Content-Length: " + headerLines[1] + "\r\n" + "Date: " + headerLines[2] + "\r\n"+ "\r\n" + content;
+            }
+            
         }
 
         private string GetStatusLine(StatusCode code)
         {
             // TODO: Create the response status line and return it
             string statusLine = string.Empty;
-
+            if (code == StatusCode.OK)
+            {
+                statusLine = "HTTP/1.1" + " " + code + " " + "OK";
+            }
+            else if (code == StatusCode.Redirect)
+            {
+                statusLine = "HTTP/1.1" + " " + code + " " + "Redirect";
+            }
+            else if (code == StatusCode.BadRequest)
+            {
+                statusLine = "HTTP/1.1" + " " + code + " " + "BadRequest";
+            }
+            else if (code == StatusCode.NotFound)
+            {
+                statusLine = "HTTP/1.1" + " " + code + " " + "NotFound";
+            }
+            else if (code == StatusCode.InternalServerError)
+            {
+                statusLine = "HTTP/1.1" + " " + code + " " + "InternalServerError";
+            }
             return statusLine;
         }
     }
