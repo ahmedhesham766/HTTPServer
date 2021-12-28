@@ -15,6 +15,9 @@ namespace HTTPServer
             //Datetime:
             //message:
             // for each exception write its details associated with datetime 
+            sr.WriteLine("Datetime:" + DateTime.Now.ToString());
+            sr.WriteLine("message:" + ex.Message);
+            sr.Flush();
         }
     }
 }
