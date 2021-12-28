@@ -63,7 +63,7 @@ namespace HTTPServer
                         break;
                     }
                     // TODO: Create a Request object using received request string
-                     Request req = new Request(data.ToString());
+                     Request req = new Request();
                     // TODO: Call HandleRequest Method that returns the response
                     Response respo = HandleRequest(req);
                     // TODO: Send Response back to client
