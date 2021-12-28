@@ -45,8 +45,6 @@ namespace HTTPServer
         /// <returns>True if parsing succeeds, false otherwise.</returns>
         public bool ParseRequest()
         {
-            throw new NotImplementedException();
-
             //TODO: parse the receivedRequest using the \r\n delimeter   
             string[] delimeters = { "\r\n" };
             requestLines = requestString.Split(delimeters, StringSplitOptions.None);
@@ -61,20 +59,18 @@ namespace HTTPServer
             {
                 return false;
             }  
-            //relativeURI = tokens[1];
+            //Check The URI
             if (!ValidateIsURI(relativeURI))
             {
                 return false;
             }
-            // Validate blank line exists
-
-            if (!ValidateBlankLine())
+            // Load header lines into HeaderLines dictionary
+            if(!LoadHeaderLines())
             {
                 return false;
             }
-            // Load header lines into HeaderLines dictionary
-
-            if(!LoadHeaderLines())
+            // Validate blank line exists
+            if (!ValidateBlankLine())
             {
                 return false;
             }
@@ -84,7 +80,6 @@ namespace HTTPServer
 
         private bool ParseRequestLine()
         {
-            // throw new NotImplementedException();
             string[] tokens = requestLines[0].Split(' ');
             relativeURI = tokens[1];
             if (tokens[0].Equals("GET"))
@@ -115,19 +110,21 @@ namespace HTTPServer
             {
                 return false;
             }
+            //print the methode type and the http version
+            Console.WriteLine(method.ToString() + ": " + httpVersion.ToString());
+
             return true;
 
         }
 
         private bool ValidateIsURI(string uri)
         {
-
+            Console.WriteLine("the uri: " + uri);
             return Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute);
         }
 
         private bool LoadHeaderLines()
         {
-            //throw new NotImplementedException();
             string[] delimeters1 = { ": " };
             for (int i = 0; i < requestLines.Length; i++)
             {
@@ -138,6 +135,11 @@ namespace HTTPServer
                    
                 }
             }
+            for (int i = 0;i < headerLines.Count(); i++)
+            {
+                //print key : value of the headers
+                Console.WriteLine(headerLines.ElementAt(i).Key + " : " + headerLines.ElementAt(i).Value);
+            }
             if (headerLines.Count() == 0)
             {
                 return false;
@@ -147,8 +149,9 @@ namespace HTTPServer
 
         private bool ValidateBlankLine()
         {
-            //throw new NotImplementedException();
+            //The BlankLine will befor the last in the request as in get method the last line is an empty content
             string blankline = requestLines[(requestLines.Length)-2];
+            Console.WriteLine(blankline);
             if (blankline.Equals(String.Empty))
             {
                 return true;
