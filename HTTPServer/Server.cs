@@ -45,7 +45,7 @@ namespace HTTPServer
             // set client socket ReceiveTimeout = 0 to indicate an infinite time-out period
             clientSocket.ReceiveTimeout = 0;
             string welcome = "welcome to the project server";
-            byte [] data = Encoding.ASCII.GetBytes(welcome);
+            byte [] data = Encoding.ASCII.GetBytes("");
             clientSocket.Send(data);
             int receivedLength;
             // TODO: receive requests in while true until remote client closes the socket.
