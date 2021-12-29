@@ -113,7 +113,7 @@ namespace HTTPServer
                 return false;
             }
             //print the methode type and the http version
-            Console.WriteLine(method.ToString() + ": " + httpVersion.ToString());
+            //Console.WriteLine(method.ToString() + ": " + httpVersion.ToString());
 
             return true;
 
@@ -121,7 +121,7 @@ namespace HTTPServer
 
         private bool ValidateIsURI(string uri)
         {
-            Console.WriteLine("the uri: " + uri);
+            //Console.WriteLine("the uri: " + uri);
             return Uri.IsWellFormedUriString(uri, UriKind.RelativeOrAbsolute);
         }
 
@@ -138,11 +138,11 @@ namespace HTTPServer
                    
                 }
             }
-            for (int i = 0;i < headerLines.Count(); i++)
+            /*for (int i = 0;i < headerLines.Count(); i++)
             {
                 //print key : value of the headers
                 Console.WriteLine(headerLines.ElementAt(i).Key + " : " + headerLines.ElementAt(i).Value);
-            }
+            }*/
             if (headerLines.Count() == 0)
             {
                 return false;
@@ -154,7 +154,7 @@ namespace HTTPServer
         {
             //The BlankLine will befor the last in the request as in get method the last line is an empty content
             string blankline = requestLines[(requestLines.Length)-2];
-            Console.WriteLine(blankline);
+            //Console.WriteLine(blankline);
             if (blankline.Equals(String.Empty))
             {
                 return true;
